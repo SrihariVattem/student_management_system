@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<!-- Custom styles specific to the student home page -->
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f8fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .student-home {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        flex-direction: column;
+    }
+
+    .student-card {
+        background-color: #ffffff;
+        box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 1000px;
+        padding: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        transition: all 0.3s ease;
+    }
+
+    .student-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .student-avatar {
+        font-size: 120px;
+        color: #4c6a92;
+        background-color: #f0f4f7;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        display: inline-block;
+        line-height: 150px;
+        text-align: center;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+        animation: avatarAnimation 2s ease-in-out infinite;
+    }
+
+    .student-avatar:hover {
+        transform: scale(1.1);
+    }
+
+    .student-details {
+        flex: 1;
+        padding-left: 40px;
+    }
+
+    .student-details h2 {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .student-details p {
+        color: #7f8c8d;
+        font-size: 1.2rem;
+        margin: 10px 0;
+        line-height: 1.6;
+    }
+
+    .student-details p strong {
+        color: #2c3e50;
+    }
+
+    .student-details .bio {
+        margin-top: 20px;
+        background-color: #ecf0f1;
+        padding: 20px;
+        border-radius: 15px;
+        font-style: italic;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .student-details .bio p {
+        color: #5f6b73;
+        font-size: 1.1rem;
+    }
+
+    .student-card .student-details p {
+        transition: color 0.3s ease;
+    }
+
+    .student-card:hover .student-details p {
+        color: #2980b9;
+    }
+
+    @keyframes avatarAnimation {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .student-card {
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .student-avatar {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        .student-details {
+            padding-left: 0;
+            text-align: center;
+        }
+
+        .student-details h2 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="student-home">
+    <!-- Student Details Card -->
+    <div class="student-card">
+        <!-- Student Avatar (Font Awesome Student Icon) -->
+        <i class="fas fa-user-graduate student-avatar"></i>
+
+        <!-- Student Details -->
+        <div class="student-details">
+            <h2>{{ student.name }}</h2>
+            <p><strong>Email:</strong> {{ student.email }}</p>
+            <p><strong>Student ID:</strong> {{ student.id }}</p>
+            <p><strong>Course:</strong> {{ student.course }}</p>
+            <p><strong>Year:</strong> {{ student.year }}</p>
+            <p><strong>Grade:</strong> {{ student.grade }}</p>
+            <p><strong>Age:</strong> {{ student.age }}</p>
+            <p><strong>Parent Contact:</strong> {{ student.parent_contact }}</p>
+            <p><strong>Gender:</strong> {{ student.get_gender_display }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<style>
+    /* Main dashboard container */
+    .dashboard-container {
+        padding: 50px;
+        background-color: #f4f8fb;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Dashboard card styling */
+    .dashboard-card {
+        background-color: #ffffff;
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        width: 100%;
+        max-width: 1200px;
+        margin-bottom: 40px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Student Avatar (Icon) Styling */
+    .student-avatar {
+        font-size: 120px;
+        color: #1abc9c;
+        margin-bottom: 20px;
+        animation: avatarAnimation 2s ease-in-out infinite;
+    }
+
+    /* Student Info Layout */
+    .student-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .student-avatar-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .student-details {
+        flex: 3;
+        text-align: left;
+    }
+
+    .student-name {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .student-email, .student-course, .student-year {
+        font-size: 1.1rem;
+        color: #7f8c8d;
+        margin-top: 5px;
+    }
+
+    /* Performance Table */
+    .performance-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .performance-table th, .performance-table td {
+        padding: 15px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .performance-table th {
+        background-color: #34495e;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .performance-table td {
+        background-color: #ecf0f1;
+    }
+
+    /* Chart Container */
+    .charts-container {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1200px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    .chart-container {
+        width: 48%;  /* Makes charts auto-adjust */
+        height: 400px; /* Control height of the chart */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        flex-direction: column;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .chart-container:hover {
+        transform: scale(1.05);
+    }
+
+    .chart-container canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .chart-label {
+        text-align: center;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-top: 10px;
+        color: #34495e;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .student-avatar {
+            font-size: 80px;
+        }
+
+        .student-name {
+            font-size: 1.7rem;
+        }
+
+        .performance-table {
+            font-size: 1rem;
+        }
+
+        .charts-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chart-container {
+            width: 90%;
+            height: 300px;
+            margin-bottom: 30px;
+        }
+    }
+
+    /* Animation for Avatar */
+    @keyframes avatarAnimation {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Student Avatar and Name -->
+    <div class="dashboard-card">
+        <div class="student-info">
+            <div class="student-avatar-container">
+                <i class="fas fa-user-graduate student-avatar"></i>
+            </div>
+            <div class="student-details">
+                <div class="student-name">{{ student.name }}</div>
+                <div class="student-email">{{ student.email }}</div>
+                <div class="student-course">Course: {{ student.course }}</div>
+                <div class="student-year">Year: {{ student.year }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Performance Table -->
+    <div class="dashboard-card">
+        <h3>Performance Overview</h3>
+        <table class="performance-table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Marks Obtained</th>
+                    <th>Exam Date</th>
+                    <th>Status</th>
+                    <th>Teacher</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for performance in performance_status %}
+                <tr>
+                    <td>{{ performance.subject }}</td>
+                    <td>{{ performance.marks }}</td>
+                    <td>{{ performance.exam_date }}</td>
+                    <td>{{ performance.status }}</td>
+                    <td>{{ performance.teacher }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pie Chart and Bar Graph Side by Side -->
+    <div class="charts-container">
+        <!-- Pie Chart for Attendance -->
+        <div class="chart-container">
+            <div class="chart-label">{{ student.name }} - Attendance</div>
+            <canvas id="attendancePieChart"></canvas>
+        </div>
+
+        <!-- Bar Chart for Marks Comparison -->
+        <div class="chart-container">
+            <div class="chart-label">{{ student.name }} - Performance</div>
+            <canvas id="marksBarChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Bar Chart for Marks Comparison (with 100 as max marks)
+var ctxBar = document.getElementById('marksBarChart').getContext('2d');
+var marksBarChart = new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+        labels: [{% for performance in performance_status %}'{{ performance.subject }}',{% endfor %}],
+        datasets: [{
+            label: 'Marks Obtained',
+            data: [{% for performance in performance_status %}{{ performance.marks }},{% endfor %}],
+            backgroundColor: 'linear-gradient(90deg, #3498db, #8e44ad)',
+            borderColor: '#2980b9',
+            borderWidth: 2
+        },
+        {
+            label: 'Max Marks (100)',
+            data: [{% for performance in performance_status %}100,{% endfor %}],
+            backgroundColor: '#95a5a6',
+            borderColor: '#7f8c8d',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Pie Chart for Attendance Percentage
+var ctxPie = document.getElementById('attendancePieChart').getContext('2d');
+var attendancePieChart = new Chart(ctxPie, {
+    type: 'pie',
+    data: {
+        labels: ['Attended', 'Absent'],
+        datasets: [{
+            label: 'Attendance',
+            data: [{{ attendance_percentage }}, {{ absent_percentage }}],
+            backgroundColor: ['#2ecc71', '#e74c3c'],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top'
+            }
+        },
+        aspectRatio: 1.5 // Ensure the pie chart is not too big
+    }
+});
+</script>
+{% endblock %}
